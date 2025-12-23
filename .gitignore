@@ -1,0 +1,88 @@
+# -----------------------------
+# Python-Specific Ignores
+# -----------------------------
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.pyre/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+
+# -----------------------------
+# Project-Specific Ignores
+# -----------------------------
+
+# Runtime data (excluded from version control)
+data/index/*
+!data/index/.gitkeep
+data/artifacts/*
+!data/artifacts/.gitkeep
+data/*.db
+data/*.db-journal
+
+# Configuration overrides (user-specific)
+config/orchestrator-config.local.yaml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Ollama models (too large for git)
+models/
+
+# Secrets
+.env
+.env.local
+secrets.yaml
