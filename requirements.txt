@@ -1,0 +1,45 @@
+# Agent Orchestrator - Core Dependencies
+# Install with: pip install -r requirements.txt
+
+# -----------------------------
+# Core Dependencies
+# -----------------------------
+
+# LLM and AI
+ollama>=0.1.0                # Local LLM client for Ollama integration
+chromadb>=0.4.0              # Vector database for RAG system
+
+# Code Analysis
+tree-sitter>=0.20.0          # Syntax tree parsing for code analysis
+
+# Configuration and Templating
+PyYAML>=6.0                  # YAML configuration file parsing
+jinja2>=3.1.0                # Template engine for specs and prompts
+
+# Database
+aiosqlite>=0.19.0            # Async SQLite for state persistence
+
+# Git Integration
+gitpython>=3.1.0             # Git repository operations
+
+# CLI and UI
+rich>=13.0.0                 # Rich terminal formatting and progress bars
+click>=8.1.0                 # CLI framework for command-line interface
+
+# HTTP Client
+httpx>=0.25.0                # Modern async HTTP client
+
+# Data Validation
+pydantic>=2.0.0              # Data validation and settings management
+
+
+# -----------------------------
+# Development Dependencies (optional)
+# -----------------------------
+# Install with: pip install -e ".[dev]" (requires pyproject.toml)
+#
+# pytest>=7.4.0              # Testing framework
+# pytest-asyncio>=0.21.0     # Async test support
+# black>=23.0.0              # Code formatter
+# ruff>=0.1.0                # Fast Python linter
+# mypy>=1.5.0                # Static type checker

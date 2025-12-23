@@ -65,6 +65,16 @@ data/artifacts/*
 !data/artifacts/.gitkeep
 data/*.db
 data/*.db-journal
+data/*.db-shm
+data/*.db-wal
+
+# ChromaDB vector database
+chroma/
+*.chroma
+
+# Vector database files
+*.faiss
+*.pkl
 
 # Configuration overrides (user-specific)
 config/orchestrator-config.local.yaml
