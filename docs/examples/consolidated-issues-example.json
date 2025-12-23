@@ -1,0 +1,115 @@
+{
+  "parent_issue": {
+    "number": 100,
+    "title": "Implement User Authentication System",
+    "body": "We need to implement a comprehensive user authentication system for our application. This will include login, registration, password reset, and session management features.\n\n**Requirements:**\n- Secure password hashing (bcrypt)\n- JWT-based session management\n- Email verification for new accounts\n- Password reset via email\n- Rate limiting on authentication endpoints\n- Audit logging for security events\n\n**Acceptance Criteria:**\n- Users can register with email and password\n- Users can log in and receive a JWT token\n- Users can reset forgotten passwords\n- All authentication endpoints are protected against brute force attacks\n- Authentication events are logged for security auditing",
+    "state": "open",
+    "labels": ["feature", "epic", "authentication"],
+    "assignees": ["john-dev", "sarah-pm"],
+    "created_at": "2024-01-01T10:00:00+00:00",
+    "updated_at": "2024-01-15T09:30:00+00:00",
+    "comments": [
+      {
+        "author": "sarah-pm",
+        "body": "Breaking this down into three main sub-tasks:\n1. Backend API implementation (#101)\n2. Frontend UI components (#102)\n3. Email service integration (#103)\n\nLet's tackle them in this order. @john-dev can you start with the backend API?",
+        "created_at": "2024-01-05T14:20:00+00:00"
+      },
+      {
+        "author": "john-dev",
+        "body": "Sounds good! I'll start with #101 and implement the core authentication logic with JWT. Should have initial implementation ready by end of week.",
+        "created_at": "2024-01-05T15:45:00+00:00"
+      }
+    ],
+    "url": "https://github.com/example-org/example-project/issues/100"
+  },
+  "child_issues": [
+    {
+      "number": 101,
+      "title": "Implement Authentication Backend API",
+      "body": "Implement the backend REST API endpoints for user authentication:\n\n**Endpoints to implement:**\n- `POST /api/auth/register` - User registration\n- `POST /api/auth/login` - User login\n- `POST /api/auth/logout` - User logout\n- `POST /api/auth/refresh` - Refresh JWT token\n- `POST /api/auth/forgot-password` - Initiate password reset\n- `POST /api/auth/reset-password` - Complete password reset\n\n**Technical Details:**\n- Use bcrypt for password hashing (cost factor 12)\n- JWT tokens with 1-hour expiration\n- Refresh tokens with 7-day expiration\n- Redis for token blacklisting\n- Rate limiting: 5 attempts per 15 minutes per IP\n- Input validation using Joi schemas",
+      "state": "closed",
+      "labels": ["backend", "api", "authentication"],
+      "assignees": ["john-dev"],
+      "created_at": "2024-01-05T15:00:00+00:00",
+      "updated_at": "2024-01-12T16:30:00+00:00",
+      "comments": [
+        {
+          "author": "john-dev",
+          "body": "Started implementation. Created database migrations and basic endpoint structure. Working on password hashing and JWT generation next.",
+          "created_at": "2024-01-06T09:00:00+00:00"
+        },
+        {
+          "author": "john-dev",
+          "body": "Core endpoints implemented. Added comprehensive unit tests. Currently at 95% code coverage. Need to add rate limiting and then this will be ready for review.",
+          "created_at": "2024-01-08T11:30:00+00:00"
+        },
+        {
+          "author": "sarah-pm",
+          "body": "Looks great! Can you also add API documentation (OpenAPI/Swagger)? Would help the frontend team integrate.",
+          "created_at": "2024-01-10T10:15:00+00:00"
+        },
+        {
+          "author": "john-dev",
+          "body": "Done! Added OpenAPI docs and deployed to staging. All tests passing. Ready for frontend integration. Closing this issue.",
+          "created_at": "2024-01-12T16:30:00+00:00"
+        }
+      ],
+      "url": "https://github.com/example-org/example-project/issues/101"
+    },
+    {
+      "number": 102,
+      "title": "Build Authentication UI Components",
+      "body": "Create React components for authentication user interface:\n\n**Components to build:**\n1. LoginForm - Email/password login form\n2. RegisterForm - New user registration form\n3. ForgotPasswordForm - Password reset request form\n4. ResetPasswordForm - New password entry form\n5. AuthLayout - Wrapper layout for auth pages\n\n**Requirements:**\n- Form validation with real-time feedback\n- Loading states during API calls\n- Error handling with user-friendly messages\n- Responsive design (mobile-first)\n- Accessibility (WCAG 2.1 AA compliant)\n- Integration with backend API (#101)",
+      "state": "open",
+      "labels": ["frontend", "ui", "authentication"],
+      "assignees": ["alice-frontend"],
+      "created_at": "2024-01-05T15:15:00+00:00",
+      "updated_at": "2024-01-14T13:20:00+00:00",
+      "comments": [
+        {
+          "author": "alice-frontend",
+          "body": "Waiting for #101 to be completed before starting integration. In the meantime, building the UI components with mock data. Design is approved by UX team.",
+          "created_at": "2024-01-10T16:00:00+00:00"
+        },
+        {
+          "author": "alice-frontend",
+          "body": "Backend API is ready! Starting integration now. Login and registration forms are working end-to-end. Password reset flow next.",
+          "created_at": "2024-01-13T10:45:00+00:00"
+        },
+        {
+          "author": "alice-frontend",
+          "body": "Progress update: Login, register, and forgot password flows complete. Reset password form in progress. Should be done by end of week. Also added comprehensive form validation.",
+          "created_at": "2024-01-14T13:20:00+00:00"
+        }
+      ],
+      "url": "https://github.com/example-org/example-project/issues/102"
+    },
+    {
+      "number": 103,
+      "title": "Integrate Email Service for Authentication",
+      "body": "Set up email service integration for authentication-related emails:\n\n**Email Templates to Create:**\n1. Welcome email (after registration)\n2. Email verification\n3. Password reset request\n4. Password changed confirmation\n5. Suspicious login alert\n\n**Technical Requirements:**\n- Use SendGrid for email delivery\n- Implement email template system (Handlebars)\n- Queue-based sending (Bull + Redis)\n- Retry logic for failed sends\n- Bounce and complaint handling\n- Unsubscribe mechanism\n- Email sending rate limits",
+      "state": "open",
+      "labels": ["backend", "email", "infrastructure"],
+      "assignees": ["mike-devops"],
+      "created_at": "2024-01-05T15:30:00+00:00",
+      "updated_at": "2024-01-08T11:00:00+00:00",
+      "comments": [
+        {
+          "author": "mike-devops",
+          "body": "SendGrid account set up. Working on email template system. Will have basic welcome email ready this week, then move to verification and password reset emails.",
+          "created_at": "2024-01-08T11:00:00+00:00"
+        }
+      ],
+      "url": "https://github.com/example-org/example-project/issues/103"
+    }
+  ],
+  "completed_issue_numbers": [101],
+  "metadata": {
+    "repo_owner": "example-org",
+    "repo_name": "example-project",
+    "fetch_time": "2024-01-15T14:30:00",
+    "total_issues": 4,
+    "completed_count": 1,
+    "missing_issues": []
+  }
+}

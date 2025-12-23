@@ -1,0 +1,233 @@
+system_prompt: |
+  You are an expert software architect and project planner. Your role is to break down complex software development tasks into clear, actionable phases with well-defined dependencies, risks, and implementation orders.
+  
+  Guidelines:
+  - Create phases that are focused and deliverable
+  - Ensure phases build logically on each other
+  - Identify realistic dependencies between phases
+  - Anticipate potential risks and challenges
+  - Provide specific, testable acceptance criteria
+  - Size phases appropriately (small: 1-2 days, medium: 3-5 days, large: 1-2 weeks)
+
+phase_planning_prompt: |
+  # Task: Plan Implementation Phases
+  
+  ## Issue Documentation
+  {issue_documentation}
+  
+  ## Repository Context
+  
+  ### Hot Files (Frequently Modified)
+  {hot_files}
+  
+  ### Relevant Code
+  {relevant_code}
+  
+  ### Documentation
+  {documentation}
+  
+  ## Instructions
+  
+  Based on the issue documentation and repository context above, create a detailed phase breakdown for implementing this task.
+  
+  Output your response as a JSON array with the following structure:
+  
+  ```json
+  [
+    {{
+      "phase_number": 1,
+      "title": "Clear, actionable phase title",
+      "intent": "Detailed description of what this phase accomplishes and why",
+      "size": "small|medium|large",
+      "files": ["path/to/file1.py", "path/to/file2.py"],
+      "acceptance_criteria": [
+        "Specific, testable criterion 1",
+        "Specific, testable criterion 2"
+      ],
+      "dependencies": [],
+      "risks": [
+        "Potential risk 1 and mitigation strategy",
+        "Potential risk 2 and mitigation strategy"
+      ]
+    }}
+  ]
+  ```
+  
+  Requirements:
+  - Create 3-8 phases (depends on complexity)
+  - Each phase should be independently testable
+  - Dependencies must reference valid phase numbers
+  - Acceptance criteria must be specific and measurable
+  - Include risk mitigation strategies
+  - Consider the existing codebase structure
+
+follow_up_prompt: |
+  # Follow-up Question and Phase Regeneration
+  
+  The user has a question or feedback about the phase plan:
+  
+  {user_question}
+  
+  ## Original Issue Documentation
+  {issue_documentation}
+  
+  ## Repository Context
+  
+  ### Hot Files (Frequently Modified)
+  {hot_files}
+  
+  ### Relevant Code
+  {relevant_code}
+  
+  ### Documentation
+  {documentation}
+  
+  ## Previous Phase Plan
+  {previous_phases}
+  
+  ## Conversation History
+  {conversation_history}
+  
+  Please regenerate the phase breakdown considering this feedback while staying grounded in the original issue documentation and repository context. Maintain the same JSON structure as before.
+
+phase_structure:
+  required_fields:
+    - phase_number
+    - title
+    - intent
+    - size
+    - files
+    - acceptance_criteria
+  optional_fields:
+    - dependencies
+    - risks
+  valid_sizes:
+    - small
+    - medium
+    - large
+  validation_rules:
+    - phase_number must be positive integer
+    - title must be non-empty string
+    - intent must be non-empty string
+    - size must be one of valid_sizes
+    - files must be list of strings
+    - acceptance_criteria must be non-empty list
+    - dependencies must be list of integers
+    - risks must be list of strings
+
+output_format_instructions: |
+  IMPORTANT: Your response must be valid JSON only. Do not include any explanatory text before or after the JSON.
+  If you need to include markdown formatting, wrap the JSON in a code block like this:
+  ```json
+  [your JSON here]
+  ```
+
+quality_guidelines:
+  - titles: "Use action verbs and be specific about deliverables"
+  - acceptance_criteria: "Make them testable and objective, avoid vague terms"
+  - dependencies: "Only include hard dependencies, not nice-to-haves"
+  - risks: "Focus on technical risks with concrete mitigation plans"
+  - file_lists: "Include all files that will be created or modified"
+
+spec_generation_system_prompt: |
+  You are an expert software engineer creating detailed implementation specifications. Your specs should be clear, actionable, and comprehensive enough for another engineer to implement without ambiguity.
+
+spec_generation_prompt: |
+  # Task: Generate Detailed Implementation Specification
+  
+  ## Phase Overview
+  **Phase Number**: {phase_number}
+  **Title**: {phase_title}
+  **Intent**: {phase_intent}
+  **Size**: {phase_size}
+  
+  ## Files to Modify
+  {files_list}
+  
+  ## Acceptance Criteria
+  {acceptance_criteria}
+  
+  ## Repository Context
+  {repo_context}
+  
+  ## Instructions
+  Create a detailed implementation specification that includes:
+  1. Step-by-step implementation instructions
+  2. Code patterns to follow (based on repo context)
+  3. Edge cases to handle
+  4. Testing requirements
+  5. Integration points with existing code
+  
+  Be specific about file modifications, function signatures, and data structures.
+
+copilot_system_instructions: |
+  You are implementing a phase of a larger software project. Follow the specification exactly, maintain existing code patterns, ensure all tests pass, and provide a detailed summary of your changes.
+
+copilot_output_format: |
+  After completing the implementation, provide a JSON summary with this structure:
+  {
+    "files_modified": ["path/to/file1.py", "path/to/file2.py"],
+    "files_created": ["path/to/new_file.py"],
+    "changes_summary": "Brief description of what was implemented",
+    "tests_added": ["test_function_1", "test_function_2"],
+    "potential_issues": ["Any concerns or edge cases to review"],
+    "completion_status": "complete|partial|blocked"
+  }
+
+copilot_retry_instructions: |
+  The previous implementation attempt had the following issues:
+  {findings_summary}
+  
+  Please address these issues while maintaining the original phase goals.
+
+spec_validation_system_prompt: |
+  You are a code review expert validating that implementation changes match the original specification.
+  Be thorough and objective. Identify any deviations, incomplete implementations, or missing requirements.
+
+spec_validation_prompt: |
+  # Task: Validate Implementation Against Specification
+  
+  ## Original Specification
+  {original_spec}
+  
+  ## Acceptance Criteria Checklist
+  {checklist_items}
+  
+  ## Changes Made
+  {git_diff}
+  
+  ## Implementation Summary
+  {copilot_summary}
+  
+  ## Files Modified
+  {files_modified}
+  
+  ## Files Created
+  {files_created}
+  
+  ## Instructions
+  
+  Analyze the changes and determine:
+  
+  1. **Checklist Completion**: For each acceptance criterion, determine if it was completed.
+  2. **Spec Compliance**: Verify changes align with the specification intent.
+  3. **Missing Implementations**: Identify any requirements that were not addressed.
+  4. **Deviations**: Note any changes that deviate from the spec.
+  
+  Respond with JSON:
+  {{
+    "checklist_results": [
+      {{
+        "item": "Original checklist item text",
+        "completed": true/false,
+        "evidence": "Explanation of why completed or not",
+        "suggested_fix": "How to complete if not done"
+      }}
+    ],
+    "spec_compliance": {{
+      "compliant": true/false,
+      "deviations": ["List of deviations from spec"],
+      "missing_implementations": ["List of missing requirements"]
+    }},
+    "overall_assessment": "Brief summary of validation results"
+  }}

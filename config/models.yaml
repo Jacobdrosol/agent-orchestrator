@@ -1,0 +1,107 @@
+# Model Configuration for Agent Orchestrator
+# This file defines models, their parameters, and connection settings
+
+# Primary models used by different agents
+primary_models:
+  planner:
+    name: "qwen2.5-coder:14b-instruct-q4_K_M"
+    purpose: "Phase planning and breakdown"
+    temperature: 0.3  # Lower temperature for more focused planning
+    max_tokens: 8192
+    system_prompt: |
+      You are an expert software architect and project planner.
+      Break down complex tasks into clear, actionable phases.
+      Focus on dependencies, risks, and implementation order.
+  
+  spec_generator:
+    name: "qwen2.5-coder:14b-instruct-q4_K_M"
+    purpose: "Detailed specification generation"
+    temperature: 0.5  # Balanced temperature for detailed specs
+    max_tokens: 16384
+    system_prompt: |
+      You are a technical specification writer with deep software engineering expertise.
+      Create comprehensive, detailed specifications that developers can implement directly.
+      Include edge cases, error handling, and integration requirements.
+  
+  embeddings:
+    name: "nomic-embed-text"
+    purpose: "Code and documentation embeddings"
+    dimensions: 768  # nomic-embed-text output dimension
+    batch_size: 32   # Process embeddings in batches for efficiency
+
+# Fallback models for resilience
+# Used automatically if primary model is unavailable
+fallback_models:
+  - name: "qwen2.5-coder:7b-instruct-q4_K_M"
+    use_case: "Faster responses when 14B unavailable"
+    vram: "~4GB"
+    notes: "Good quality, faster generation speed"
+  
+  - name: "deepseek-coder:6.7b-instruct-q4_K_M"
+    use_case: "Alternative coder model"
+    vram: "~4GB"
+    notes: "Different architecture, may excel at specific tasks"
+
+# Default generation parameters
+# Can be overridden per-request or per-agent
+generation_defaults:
+  temperature: 0.7        # Sampling temperature (0.0-1.0). Lower = more focused, higher = more creative
+  top_p: 0.9             # Nucleus sampling threshold (0.0-1.0)
+  top_k: 40              # Top-k sampling parameter
+  repeat_penalty: 1.1    # Penalty for repeating tokens (1.0 = no penalty)
+  num_ctx: 8192          # Context window size (tokens)
+  num_predict: 4096      # Maximum tokens to generate
+
+# Ollama connection and retry settings
+ollama:
+  host: "http://localhost:11434"  # Ollama service URL
+  timeout: 300                     # Request timeout in seconds (5 minutes)
+  max_retries: 3                   # Maximum retry attempts on failure
+  retry_delay: 2                   # Base delay between retries (exponential backoff)
+  keep_alive: -1                   # Keep models loaded indefinitely (-1 = forever, 0 = unload immediately)
+
+# Health check configuration
+health_check:
+  enabled: true          # Enable periodic health checks
+  interval: 60           # Seconds between health checks
+  required_models:       # Models that must be available
+    - "qwen2.5-coder:14b-instruct-q4_K_M"
+    - "nomic-embed-text"
+
+# Circuit breaker settings for fault tolerance
+circuit_breaker:
+  enabled: true
+  failure_threshold: 5   # Consecutive failures before opening circuit
+  timeout: 60           # Seconds to wait before retrying after circuit opens
+  
+# Model-specific overrides
+# Fine-tune parameters for specific use cases
+model_overrides:
+  "qwen2.5-coder:14b-instruct-q4_K_M":
+    num_ctx: 16384      # Larger context for complex code
+    repeat_penalty: 1.15 # Reduce repetition in code generation
+    
+  "nomic-embed-text":
+    batch_size: 64      # Can handle larger batches efficiently
+
+# Usage examples and notes:
+#
+# Temperature guidelines:
+#   - 0.1-0.3: Focused, deterministic (planning, critical code)
+#   - 0.4-0.7: Balanced (general code generation)
+#   - 0.8-1.0: Creative (brainstorming, alternatives)
+#
+# Context window (num_ctx):
+#   - Larger = more context but slower and more VRAM
+#   - 4096: Standard for most tasks
+#   - 8192: Good balance for code with context
+#   - 16384+: Full file context, complex refactoring
+#
+# VRAM considerations:
+#   - qwen2.5-coder:14b-instruct-q4_K_M: ~8-10GB
+#   - nomic-embed-text: ~274MB
+#   - Keep OLLAMA_MAX_LOADED_MODELS=2 to load both simultaneously
+#
+# For more information:
+#   - Ollama docs: https://github.com/ollama/ollama/blob/main/docs/api.md
+#   - Model library: https://ollama.com/library

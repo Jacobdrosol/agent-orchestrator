@@ -1,0 +1,80 @@
+# Feedback Specification - Pass {{ pass_number }}
+
+This specification addresses issues found in the previous implementation attempt.
+
+---
+
+## Original Specification
+
+{{ original_spec }}
+
+---
+
+## Previous Attempt Summary
+
+{{ copilot_summary }}
+
+---
+
+## Issues Found
+
+{% for category, findings in findings_by_category.items() %}
+### {{ category|upper }} Issues
+
+{% for finding in findings %}
+**{{ finding.severity|upper }}: {{ finding.title }}**
+
+*Description:* {{ finding.description }}
+
+*Evidence:*
+```
+{{ finding.evidence }}
+```
+
+*Suggested Fix:* {{ finding.suggested_fix }}
+
+---
+{% endfor %}
+{% endfor %}
+
+{% if failed_checklist_items %}
+## Failed Acceptance Criteria
+
+The following acceptance criteria from the original specification were not completed:
+
+{% for item in failed_checklist_items %}
+- [ ] {{ item }}
+{% endfor %}
+
+**These must be completed in this pass.**
+
+{% endif %}
+
+---
+
+## Required Fixes
+
+Based on the findings above, you must:
+
+{% for fix in suggested_fixes %}
+{{ loop.index }}. {{ fix }}
+{% endfor %}
+
+---
+
+## Suggested Approach
+
+1. **Review the evidence** for each finding to understand what went wrong
+2. **Address critical issues first** (major findings) before moving to medium and minor issues
+3. **Complete failed acceptance criteria** that were identified in the checklist
+4. **Validate your changes** by running the same checks that failed previously
+5. **Ensure no regressions** - don't break things that were working
+
+---
+
+## Important Notes
+
+- All original requirements from the specification still apply
+- Focus on fixing the identified issues without introducing new problems
+- Test your changes thoroughly before completing this pass
+- If any requirement is unclear, make reasonable assumptions and document them

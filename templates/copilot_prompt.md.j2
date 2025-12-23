@@ -1,0 +1,149 @@
+# Phase Implementation Request
+
+You are implementing a phase of a larger software project. Follow the specification exactly, maintain existing code patterns, ensure all tests pass, and provide a detailed summary of your changes.
+
+---
+
+## Phase Specification
+
+{{ phase_spec }}
+
+---
+
+{% if findings and pass_number > 1 %}
+## Findings from Previous Pass
+
+This is pass {{ pass_number }} of the implementation. The previous pass had the following issues that need to be addressed:
+
+### Major Findings
+{% if findings.major %}
+{% for finding in findings.major %}
+- **{{ finding.title }}**: {{ finding.description }}
+  - Evidence: {{ finding.evidence }}
+  - Suggested fix: {{ finding.suggested_fix }}
+{% endfor %}
+{% else %}
+- None
+{% endif %}
+
+### Medium Findings
+{% if findings.medium %}
+{% for finding in findings.medium %}
+- **{{ finding.title }}**: {{ finding.description }}
+  - Evidence: {{ finding.evidence }}
+  - Suggested fix: {{ finding.suggested_fix }}
+{% endfor %}
+{% else %}
+- None
+{% endif %}
+
+### Minor Findings
+{% if findings.minor %}
+{% for finding in findings.minor %}
+- **{{ finding.title }}**: {{ finding.description }}
+  - Evidence: {{ finding.evidence }}
+  - Suggested fix: {{ finding.suggested_fix }}
+{% endfor %}
+{% else %}
+- None
+{% endif %}
+
+### Failed Checklist Items
+{% if findings.failed_checks %}
+{% for check in findings.failed_checks %}
+- {{ check.item }}: {{ check.reason }}
+{% endfor %}
+{% else %}
+- None
+{% endif %}
+
+Please address these issues while maintaining the original phase goals.
+
+---
+
+{% endif %}
+{% if repo_context %}
+## Repository Context
+
+{{ repo_context }}
+
+---
+
+{% endif %}
+## Implementation Instructions
+
+{% if execution_mode == "branch" %}
+**Execution Mode**: Branch-based workflow
+
+You are working in a dedicated branch for this phase. Make all necessary changes to implement the specification. Changes will be committed automatically after execution.
+{% else %}
+**Execution Mode**: Direct implementation
+
+You are working directly in the repository. Make all necessary changes to implement the specification carefully.
+{% endif %}
+
+### Guidelines
+
+1. **Follow the specification**: Implement all requirements listed in the phase specification above
+2. **Maintain code quality**: Follow existing code patterns, naming conventions, and style guides
+3. **Ensure tests pass**: All existing tests should continue to pass, and add new tests for new functionality
+4. **Handle edge cases**: Consider error handling, validation, and edge cases
+5. **Document changes**: Add or update docstrings, comments, and documentation as needed
+6. **Be thorough**: Complete the implementation fully - don't leave placeholder comments or TODOs
+
+{% if pass_number > 1 %}
+### Priority for This Pass
+
+**IMPORTANT**: Address the findings from the previous pass listed above. These are known issues that caused verification to fail. Make sure to:
+- Fix all major findings
+- Address medium findings where possible
+- Resolve failed checklist items
+- Test your changes to ensure they work correctly
+{% endif %}
+
+### Expected Output Format
+
+**CRITICAL**: You must provide precise unified diffs for each file change in the `patches` array. Do not attempt to directly modify repository files - instead, generate actionable patches that can be applied programmatically.
+
+After analyzing the implementation requirements, provide a JSON summary with this structure:
+
+```json
+{
+  "patches": [
+    {
+      "file": "path/to/file1.py",
+      "diff": "--- a/path/to/file1.py\n+++ b/path/to/file1.py\n@@ -10,7 +10,7 @@\n context line\n-old line\n+new line\n context line"
+    },
+    {
+      "file": "path/to/file2.py",
+      "diff": "--- a/path/to/file2.py\n+++ b/path/to/file2.py\n@@ -1,0 +1,5 @@\n+new line 1\n+new line 2\n+new line 3"
+    }
+  ],
+  "files_modified": ["path/to/file1.py"],
+  "files_created": ["path/to/file2.py"],
+  "changes_summary": "Brief description of what was implemented",
+  "tests_added": ["test_function_1", "test_function_2"],
+  "potential_issues": ["Any concerns or edge cases to review"],
+  "completion_status": "complete"
+}
+```
+
+**Patch Format Requirements**:
+- Each patch must be a valid unified diff format
+- Include at least 3 lines of context before and after changes
+- Use proper diff headers: `--- a/filepath` and `+++ b/filepath`
+- Include line numbers in hunk headers: `@@ -start,count +start,count @@`
+- For new files, use: `--- /dev/null` and `+++ b/filepath`
+- For deleted files, use: `--- a/filepath` and `+++ /dev/null`
+- Escape special characters properly in diff content
+
+**completion_status** should be one of:
+- `complete`: All requirements implemented successfully with patches
+- `partial`: Some requirements implemented with patches, but not all
+- `blocked`: Unable to generate patches due to dependencies or issues
+
+---
+
+## Begin Implementation
+
+Please implement the phase specification now. Make all necessary file changes and provide the JSON summary when complete.

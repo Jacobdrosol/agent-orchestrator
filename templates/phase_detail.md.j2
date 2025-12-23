@@ -1,0 +1,74 @@
+# Phase {{ phase.phase_number }}: {{ phase.title }}
+
+## Overview
+
+**Intent**: {{ phase.intent }}
+
+**Size**: {{ phase.size|upper }}
+
+**Status**: {{ phase.status|default('pending')|upper }}
+
+## Files to Modify
+
+{% if phase.files %}
+{% for file in phase.files %}
+- `{{ file }}`
+{% endfor %}
+{% else %}
+- No files specified
+{% endif %}
+
+## Acceptance Criteria
+
+{% if phase.acceptance_criteria %}
+{% for criterion in phase.acceptance_criteria %}
+{{ loop.index }}. {{ criterion }}
+{% endfor %}
+{% else %}
+- No acceptance criteria specified
+{% endif %}
+
+## Dependencies
+
+{% if phase.dependencies %}
+This phase depends on:
+{% for dep in phase.dependencies %}
+- Phase {{ dep }}
+{% endfor %}
+{% else %}
+No dependencies - can be started immediately
+{% endif %}
+
+## Risks & Mitigation
+
+{% if phase.risks %}
+{% for risk in phase.risks %}
+- {{ risk }}
+{% endfor %}
+{% else %}
+No identified risks
+{% endif %}
+
+## Implementation Notes
+
+{% if phase.implementation_notes %}
+{{ phase.implementation_notes }}
+{% else %}
+See phase plan for detailed implementation approach.
+{% endif %}
+
+## Testing Requirements
+
+{% if phase.test_requirements %}
+{% for requirement in phase.test_requirements %}
+- {{ requirement }}
+{% endfor %}
+{% else %}
+- Verify all acceptance criteria are met
+- Run existing test suite to ensure no regressions
+- Add tests for new functionality
+{% endif %}
+
+---
+
+**Phase {{ phase.phase_number }} of {{ total_phases }}**

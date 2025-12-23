@@ -15,10 +15,9 @@ param(
 # Set error action preference
 $ErrorActionPreference = "Stop"
 
-# Determine project root (parent of AgentOrchestrator folder)
+# Determine project root (AgentOrchestrator is now the root)
 $ScriptDir = Split-Path -Parent $PSCommandPath
-$AgentOrchestratorDir = Split-Path -Parent $ScriptDir
-$ProjectRoot = Split-Path -Parent $AgentOrchestratorDir
+$ProjectRoot = Split-Path -Parent $ScriptDir
 
 Write-Host "Agent Orchestrator - PowerShell Launcher" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan

@@ -99,7 +99,7 @@ Copy the default configuration and customize for your environment:
 
 ```powershell
 # PowerShell launcher script (recommended)
-.\AgentOrchestrator\scripts\orchestrator.ps1
+.\scripts\orchestrator.ps1
 
 # Or run directly with Python
 python main.py run
@@ -176,16 +176,20 @@ All artifacts are saved to `data/artifacts/` with timestamps for review.
 ## Project Structure
 
 ```
-AgentOrchestrator/
-├── orchestrator/          # Core orchestration engine (planner, executor, verifier)
-├── repo_brain/            # RAG system for repo indexing & retrieval
-├── agents/                # Specialized agents (Copilot CLI interface, GitHub bot)
-├── templates/             # Jinja2 templates for specs, findings, prompts
-├── config/                # YAML configuration files
-├── data/                  # Runtime data (vector store, artifacts, state DB)
-├── tests/                 # Unit and integration tests
-├── docs/                  # Comprehensive documentation
-└── scripts/               # Utility scripts (PowerShell launcher, etc.)
+agent-orchestrator/          # Git repository root
+├── orchestrator/            # Core orchestration engine (planner, executor, verifier)
+├── repo_brain/              # RAG system for repo indexing & retrieval
+├── agents/                  # Specialized agents (Copilot CLI interface, GitHub bot)
+├── templates/               # Jinja2 templates for specs, findings, prompts
+├── config/                  # YAML configuration files
+├── data/                    # Runtime data (vector store, artifacts, state DB)
+├── tests/                   # Unit and integration tests
+├── docs/                    # Comprehensive documentation
+├── scripts/                 # Utility scripts (PowerShell launcher, etc.)
+├── main.py                  # CLI entry point
+├── requirements.txt         # Dependencies
+├── pyproject.toml           # Package metadata
+└── README.md                # This file
 ```
 
 For detailed architecture and component interactions, see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

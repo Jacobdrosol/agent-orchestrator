@@ -1,0 +1,126 @@
+# Agent Orchestrator Configuration
+# This file controls all orchestration behavior and can be customized per project
+
+# Execution Settings
+execution:
+  max_retries: 3                    # Maximum retry attempts per phase before manual intervention
+  retry_delay: 5.0                  # Seconds to wait between retry attempts
+  copilot_mode: "direct"            # Execution mode: "direct" (no branches) or "branch" (branch-per-phase)
+  branch_prefix: "orchestrator/"    # Prefix for auto-generated branches in branch mode
+  
+# Findings Thresholds
+# Phase completion is blocked if findings exceed these thresholds
+findings_thresholds:
+  major: 0      # No major findings allowed (build failures, critical errors)
+  medium: 0     # No medium findings allowed (test failures, security issues)
+  minor: 5      # Allow up to 5 minor findings (style issues, warnings)
+
+# Verification Settings
+verification:
+  build_enabled: true               # Run build verification
+  build_command: "python -m pytest --collect-only"  # Command to verify build/imports
+  build_timeout: 300                # Timeout in seconds
+  
+  test_enabled: true                # Run test suite
+  test_command: "python -m pytest tests/"  # Command to run tests
+  test_timeout: 600                 # Timeout in seconds
+  test_output_format: "text"        # Output format: text, junit, json
+  
+  lint_enabled: true                # Run linting checks
+  lint_command: "python -m pylint orchestrator/"  # Command to run linter
+  lint_timeout: 120                 # Timeout in seconds
+  
+  security_scan_enabled: false      # Run security scans (disabled by default)
+  security_command: "bandit -r orchestrator/"  # Command to run security scanner
+  security_timeout: 180             # Timeout in seconds
+  
+  spec_validation_enabled: true     # Validate changes against spec using LLM
+  spec_validation_temperature: 0.3  # LLM temperature for validation
+  
+  # Findings thresholds (defined above but referenced here)
+  findings_thresholds:
+    major: 0      # No major findings allowed
+    medium: 0     # No medium findings allowed
+    minor: 5      # Allow up to 5 minor findings
+  
+  # Custom Tests (optional)
+  # Define project-specific tests that run conditionally
+  custom_tests:
+    - name: "dotnet_migrations"
+      command: "dotnet ef migrations list"
+      enabled: false                # Enable only when needed
+      working_directory: "src/"
+      timeout: 60
+      severity_on_failure: "medium"
+      
+    - name: "integration_tests"
+      command: "pytest tests/integration/"
+      enabled: false
+      timeout: 300
+      severity_on_failure: "medium"
+
+# RAG System Settings
+rag:
+  chunk_size: 1000                  # Characters per code chunk
+  chunk_overlap: 200                # Overlap between chunks for context
+  max_retrieved_chunks: 20          # Maximum chunks to retrieve per query
+  semantic_search_enabled: true     # Enable vector similarity search
+  symbol_search_enabled: true       # Enable symbol-based search (classes, functions)
+  index_on_startup: false           # Re-index repository on every run (slow but thorough)
+
+# Git Integration
+git:
+  auto_pull: true                   # Automatically pull latest changes before starting
+  auto_commit: false                # Automatically commit changes after each phase
+  commit_message_template: "Phase {phase_number}: {phase_title}\n\n{phase_intent}"
+
+# Artifact Management
+artifacts:
+  retention_days: 30                # Days to keep artifacts before cleanup
+  base_path: "data/artifacts"       # Base directory for artifacts
+  compress_old_artifacts: true      # Compress artifacts older than 7 days
+
+# Logging Configuration
+logging:
+  level: "INFO"                     # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file_path: "data/orchestrator.log"
+  console_enabled: true             # Print logs to console
+  max_file_size_mb: 50              # Rotate log file at this size
+  backup_count: 5                   # Keep this many rotated log files
+
+# Copilot Integration Settings
+copilot:
+  enabled: true                      # Enable/disable Copilot integration
+  cli_path: "gh"                     # Path to gh CLI (default: use PATH)
+  timeout: 600                       # Execution timeout in seconds (10 minutes)
+  validate_on_startup: true          # Validate Copilot availability before execution
+  capture_raw_output: true           # Save raw CLI output for debugging
+  
+  # Branch mode settings
+  auto_commit: true                  # Automatically commit changes in branch mode
+  commit_message_template: "Phase {phase_number}: {phase_title}\n\n{copilot_summary}"
+  push_branches: false               # Push branches to remote
+  
+  # Error handling
+  retry_on_timeout: true             # Retry if Copilot times out
+  max_output_size_mb: 10             # Maximum output size to capture
+
+# Model Configuration
+# Models are defined in models.yaml
+# This section allows per-run overrides
+models_path: "config/models.yaml"   # Path to models configuration file
+
+model_overrides:
+  planner_temperature: 0.3          # Override planner temperature
+  spec_generator_temperature: 0.5   # Override spec generator temperature
+
+# GitHub Issue Consolidation (Optional)
+# Used by the issue consolidator module (agents.issue_consolidator)
+# This section is optional and only needed if using GitHub issue consolidation
+github:
+  enabled: false                    # Enable automatic issue consolidation
+  token_env_var: "GITHUB_TOKEN"     # Environment variable for GitHub token
+  default_repo: ""                  # Default repository (owner/repo) - leave empty to require explicit repo
+  fetch_comments: true              # Include issue comments in consolidated output
+  rate_limit_retry: true            # Retry requests on rate limit
+  max_retries: 3                    # Maximum retry attempts for API calls

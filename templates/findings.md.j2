@@ -1,0 +1,94 @@
+# Verification Findings Report
+
+**Phase:** {{ phase_number }} - {{ phase_title }}  
+**Pass:** {{ pass_number }}  
+**Timestamp:** {{ timestamp }}  
+**Status:** {% if passed %}✅ PASSED{% else %}❌ FAILED{% endif %}
+
+## Summary
+
+{% if findings_summary %}
+| Severity | Count |
+|----------|-------|
+| 🔴 Major | {{ findings_summary.major }} |
+| 🟡 Medium | {{ findings_summary.medium }} |
+| 🔵 Minor | {{ findings_summary.minor }} |
+{% else %}
+No findings detected. All checks passed successfully.
+{% endif %}
+
+**Checks Run:** {{ checks_run|join(", ") }}
+
+---
+
+{% if major_findings %}
+## 🔴 Major Findings
+
+Critical issues that must be addressed:
+
+| Category | Title | Evidence | Suggested Fix |
+|----------|-------|----------|---------------|
+{% for finding in major_findings %}
+| {{ finding.category }} | {{ finding.title }} | <details><summary>View Evidence</summary><pre>{{ finding.evidence }}</pre></details> | {{ finding.suggested_fix }} |
+{% endfor %}
+
+{% endif %}
+
+{% if medium_findings %}
+## 🟡 Medium Findings
+
+Important issues that should be addressed:
+
+| Category | Title | Evidence | Suggested Fix |
+|----------|-------|----------|---------------|
+{% for finding in medium_findings %}
+| {{ finding.category }} | {{ finding.title }} | <details><summary>View Evidence</summary><pre>{{ finding.evidence }}</pre></details> | {{ finding.suggested_fix }} |
+{% endfor %}
+
+{% endif %}
+
+{% if minor_findings %}
+## 🔵 Minor Findings
+
+Optional improvements:
+
+| Category | Title | Evidence | Suggested Fix |
+|----------|-------|----------|---------------|
+{% for finding in minor_findings %}
+| {{ finding.category }} | {{ finding.title }} | <details><summary>View Evidence</summary><pre>{{ finding.evidence }}</pre></details> | {{ finding.suggested_fix }} |
+{% endfor %}
+
+{% endif %}
+
+{% if failed_checklist_items %}
+## ❌ Failed Checklist Items
+
+The following acceptance criteria were not completed:
+
+{% for item in failed_checklist_items %}
+- [ ] {{ item }}
+{% endfor %}
+
+{% endif %}
+
+---
+
+## Recommendations
+
+{% if findings_summary.major > 0 %}
+⚠️ **Phase must be retried** to address {{ findings_summary.major }} critical issue(s).
+{% elif findings_summary.medium > 0 %}
+⚠️ **Phase should be retried** to address {{ findings_summary.medium }} important issue(s).
+{% elif findings_summary.minor > 0 %}
+✅ Phase can proceed with {{ findings_summary.minor }} minor issue(s) documented.
+{% else %}
+✅ Phase verification complete. No issues found.
+{% endif %}
+
+## Next Steps
+
+{% if not passed %}
+The following issues will be included in the next pass specification for correction.
+{% else %}
+Phase verification complete. Ready to proceed to next phase.
+{% endif %}

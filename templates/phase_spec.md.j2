@@ -1,0 +1,133 @@
+# Phase {{ phase_number }}: {{ phase_title }}
+
+## Overview
+
+**Phase Number**: {{ phase_number }}
+**Title**: {{ phase_title }}
+**Intent**: {{ phase_intent }}
+**Size**: {{ phase_size }}
+{% if pass_number %}**Pass Number**: {{ pass_number }}{% endif %}
+
+## Goals
+
+{{ phase_goals }}
+
+## Constraints
+
+{% if constraints %}
+{{ constraints }}
+{% else %}
+- Follow existing repository conventions and patterns
+- Maintain backward compatibility unless explicitly specified
+- Ensure all changes are testable
+{% if dependencies %}
+- Dependencies: {{ dependencies }}
+{% endif %}
+{% endif %}
+
+## Implementation Steps
+
+{% if implementation_steps %}
+{{ implementation_steps }}
+{% else %}
+{% for criterion in acceptance_criteria %}
+{{ loop.index }}. {{ criterion }}
+{% endfor %}
+{% endif %}
+
+## Files to Modify
+
+{% if files_to_modify %}
+{% for file in files_to_modify %}
+- `{{ file.path }}`: {{ file.description }}
+{% endfor %}
+{% else %}
+{% for file in files %}
+- `{{ file }}`
+{% endfor %}
+{% endif %}
+
+## Edge Cases
+
+{% if edge_cases %}
+{{ edge_cases }}
+{% else %}
+- Handle missing or invalid inputs gracefully
+- Ensure proper error messages for failure scenarios
+- Consider concurrent access if applicable
+- Validate all external data before processing
+{% endif %}
+
+## Testing Requirements
+
+{% if testing_requirements %}
+{{ testing_requirements }}
+{% else %}
+- Add unit tests for new functionality
+- Update existing tests if modifying behavior
+- Ensure edge cases are covered
+- Verify integration with existing components
+{% endif %}
+
+## Repository Context
+
+{% if repo_context %}
+### Relevant Code Snippets
+
+{% for chunk in repo_context %}
+#### {{ chunk.file_path }}{% if chunk.line_start %} (lines {{ chunk.line_start }}-{{ chunk.line_end }}){% endif %}
+
+```{{ chunk.language or '' }}
+{{ chunk.content }}
+```
+
+{% if chunk.symbols %}
+**Symbols**: {{ chunk.symbols | join(', ') }}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+{% if hot_files %}
+### Frequently Modified Files
+
+{% for file in hot_files %}
+- `{{ file.path }}` ({{ file.modification_count }} recent modifications)
+{% endfor %}
+{% endif %}
+
+{% if related_context %}
+### Additional Context
+
+{{ related_context }}
+{% endif %}
+
+## Acceptance Criteria
+
+{% for criterion in acceptance_criteria %}
+- [ ] {{ criterion }}
+{% endfor %}
+
+## Risks and Mitigation
+
+{% if risks %}
+{% for risk in risks %}
+**Risk**: {{ risk.description }}
+**Mitigation**: {{ risk.mitigation }}
+
+{% endfor %}
+{% else %}
+- **Risk**: Changes may introduce regressions
+  **Mitigation**: Comprehensive testing and code review
+
+- **Risk**: Integration issues with existing code
+  **Mitigation**: Follow established patterns from repository context
+{% endif %}
+
+## Notes
+
+{% if notes %}
+{{ notes }}
+{% endif %}
+
+This specification should provide all necessary information for implementation. Follow the repository patterns shown in the context sections above.

@@ -1,0 +1,84 @@
+# Consolidated Issues: {{ parent.title }}
+
+## Metadata
+- **Repository**: {{ repo_owner }}/{{ repo_name }}
+- **Parent Issue**: #{{ parent.number }}
+- **Total Child Issues**: {{ child_issues|length }}
+- **Completed**: {{ completed_count }}/{{ total_count }}
+- **Generated**: {{ timestamp }}
+
+---
+
+## Parent Issue: #{{ parent.number }} - {{ parent.title }}
+
+**Status**: {{ parent.state }}  
+**Created**: {{ parent.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}  
+**Updated**: {{ parent.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}  
+{% if parent.labels %}**Labels**: {{ parent.labels|join(', ') }}{% endif %}  
+{% if parent.assignees %}**Assignees**: {{ parent.assignees|join(', ') }}{% endif %}  
+**URL**: {{ parent.url }}
+
+### Description
+
+{{ parent.body if parent.body else '*No description provided*' }}
+
+{% if parent.comments %}
+### Comments ({{ parent.comments|length }})
+
+{% for comment in parent.comments %}
+#### Comment by **{{ comment.author }}** - {{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}
+
+{{ comment.body }}
+
+{% endfor %}
+{% endif %}
+
+---
+
+## Child Issues
+
+{% for child in child_issues %}
+### Issue #{{ child.number }}: {{ child.title }} {% if child.number in completed %}✓ COMPLETED{% endif %}
+
+**Status**: {{ child.state }}  
+**Created**: {{ child.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}  
+**Updated**: {{ child.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}  
+{% if child.labels %}**Labels**: {{ child.labels|join(', ') }}{% endif %}  
+{% if child.assignees %}**Assignees**: {{ child.assignees|join(', ') }}{% endif %}  
+**URL**: {{ child.url }}
+
+#### Description
+
+{{ child.body if child.body else '*No description provided*' }}
+
+{% if child.comments %}
+#### Comments ({{ child.comments|length }})
+
+{% for comment in child.comments %}
+**{{ comment.author }}** - {{ comment.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') }}:
+
+{{ comment.body }}
+
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+
+## Summary
+
+- **Total Child Issues**: {{ total_count }}
+- **Completed**: {{ completed_count }}
+- **In Progress**: {{ in_progress_count }}
+- **Completion Rate**: {{ completion_percentage }}%
+
+{% if total_count == 0 %}
+*No child issues provided.*
+{% elif completed_count == total_count %}
+🎉 **All child issues completed!**
+{% elif completed_count == 0 %}
+⚠️ **No child issues completed yet.**
+{% else %}
+🔄 **Work in progress** - {{ in_progress_count }} issue(s) remaining.
+{% endif %}

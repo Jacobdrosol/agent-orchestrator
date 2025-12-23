@@ -1,0 +1,124 @@
+# Development Configuration
+# This configuration is optimized for development and testing
+
+# Execution settings
+execution:
+  max_retries: 2  # Fewer retries for faster feedback
+  enable_copilot: true
+  copilot_mode: "suggest"  # Suggest changes but require approval
+  timeout_seconds: 300
+  parallel_phases: false  # Disable for easier debugging
+
+# Findings thresholds - relaxed for development
+findings_thresholds:
+  max_major: 1  # Allow some major issues during development
+  max_medium: 10
+  max_minor: 50
+
+# Verification settings - comprehensive for development
+verification:
+  run_build: true
+  build_command: "python -m py_compile orchestrator/*.py"
+  
+  run_tests: true
+  test_command: "pytest -v"
+  
+  run_lint: true
+  lint_command: "flake8 orchestrator/ --max-line-length=100"
+  
+  run_security_checks: false  # Skip for speed in development
+  security_command: "bandit -r orchestrator/"
+  
+  custom_tests:
+    - name: "Type Checking"
+      command: "mypy orchestrator/ --ignore-missing-imports"
+      required: false
+    
+    - name: "Coverage Check"
+      command: "pytest --cov=orchestrator --cov-report=term-missing --cov-fail-under=70"
+      required: false
+
+# RAG system settings - optimized for development
+rag:
+  chunk_size: 800  # Smaller chunks for faster indexing
+  chunk_overlap: 150
+  top_k_results: 3  # Fewer results for faster retrieval
+  rerank_results: false  # Disable for speed
+  embedding_model: "nomic-embed-text"
+  index_patterns:
+    - "**/*.py"
+    - "**/*.md"
+  exclude_patterns:
+    - "**/venv/**"
+    - "**/__pycache__/**"
+    - "**/.*"
+    - "**/dist/**"
+    - "**/build/**"
+
+# Git settings - manual control for development
+git:
+  auto_pull: false  # Don't auto-pull to avoid conflicts
+  auto_commit: false  # Manual commits during development
+  commit_message_template: "dev: {phase_name}"
+  require_clean_workspace: false  # Allow uncommitted changes
+
+# Artifact management - keep everything for debugging
+artifacts:
+  retention_days: 90  # Keep artifacts longer
+  compress_after_days: 30
+  max_size_mb: 2000
+  storage_path: "data/artifacts"
+
+# Logging - verbose for development
+logging:
+  level: "DEBUG"  # Maximum verbosity
+  file_path: "data/logs/orchestrator.log"
+  max_file_size_mb: 100
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  enable_console: true  # Show logs in console
+  console_level: "INFO"  # Less verbose in console
+
+# Model overrides - use smaller/faster models for development
+model_overrides:
+  planner_model: "qwen2.5-coder:7b"
+  executor_model: "qwen2.5-coder:7b"
+  verifier_model: "qwen2.5-coder:7b"
+  rag_model: "nomic-embed-text"
+
+# Database settings
+database:
+  path: "data/orchestrator.db"
+  backup_enabled: true
+  backup_interval_hours: 24
+  vacuum_on_startup: false  # Skip for faster startup
+
+# Performance settings
+performance:
+  enable_profiling: true  # Enable performance profiling
+  profile_output: "data/profiles"
+  max_concurrent_llm_calls: 1  # Avoid rate limits during development
+  llm_timeout_seconds: 120
+  cache_llm_responses: true  # Cache to speed up testing
+
+# Development-specific settings
+development:
+  enable_debug_mode: true
+  mock_expensive_operations: false
+  fast_mode: true  # Skip some non-critical operations
+  auto_reload: true  # Auto-reload on code changes
+  
+# Testing settings
+testing:
+  use_test_database: true
+  test_database_path: ":memory:"  # In-memory for speed
+  cleanup_after_tests: true
+  mock_llm_calls: false
+  test_timeout: 60
+
+# Feature flags - enable experimental features
+features:
+  enable_multi_agent: false
+  enable_learning: false
+  enable_analytics: true
+  enable_web_ui: false

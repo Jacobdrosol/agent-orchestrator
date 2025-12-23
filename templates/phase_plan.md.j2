@@ -1,0 +1,66 @@
+# Phase Plan
+
+**Run ID**: {{ run_id }}  
+**Repository**: {{ repo_path }}  
+**Branch**: {{ branch }}  
+**Generated**: {{ timestamp }}  
+**Total Phases**: {{ phases|length }}
+
+---
+
+{% for phase in phases %}
+## Phase {{ phase.phase_number }}: {{ phase.title }}
+
+**Intent**: {{ phase.intent }}
+
+**Size**: {{ phase.size|upper }}
+
+### Files to Modify
+{% if phase.files %}
+{% for file in phase.files %}
+- `{{ file }}`
+{% endfor %}
+{% else %}
+- No files specified
+{% endif %}
+
+### Acceptance Criteria
+{% if phase.acceptance_criteria %}
+{% for criterion in phase.acceptance_criteria %}
+{{ loop.index }}. {{ criterion }}
+{% endfor %}
+{% else %}
+- No acceptance criteria specified
+{% endif %}
+
+{% if phase.dependencies %}
+### Dependencies
+{% for dep in phase.dependencies %}
+- Phase {{ dep }}
+{% endfor %}
+{% endif %}
+
+{% if phase.risks %}
+### Risks & Mitigation
+{% for risk in phase.risks %}
+- {{ risk }}
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+
+## Summary
+
+- **Total Phases**: {{ phases|length }}
+- **Small Phases**: {{ phases|selectattr('size', 'equalto', 'small')|list|length }}
+- **Medium Phases**: {{ phases|selectattr('size', 'equalto', 'medium')|list|length }}
+- **Large Phases**: {{ phases|selectattr('size', 'equalto', 'large')|list|length }}
+
+## Next Steps
+
+1. Review and approve this phase plan
+2. Begin execution with Phase 1
+3. Track progress through the StateManager
+4. Complete acceptance criteria for each phase before proceeding

@@ -1,0 +1,212 @@
+# Production Configuration
+# This configuration is optimized for production deployments
+
+# Execution settings
+execution:
+  max_retries: 3  # Standard retry count
+  enable_copilot: true
+  copilot_mode: "execute"  # Automatically execute approved changes
+  timeout_seconds: 600  # Longer timeout for production tasks
+  parallel_phases: true  # Enable parallel execution when possible
+
+# Findings thresholds - strict for production
+findings_thresholds:
+  max_major: 0  # No major issues allowed
+  max_medium: 3  # Very few medium issues
+  max_minor: 10  # Limited minor issues
+
+# Verification settings - comprehensive for production
+verification:
+  run_build: true
+  build_command: "python -m py_compile orchestrator/*.py"
+  
+  run_tests: true
+  test_command: "pytest --tb=short"
+  
+  run_lint: true
+  lint_command: "flake8 orchestrator/ --max-line-length=100"
+  
+  run_security_checks: true  # Always run security checks in production
+  security_command: "bandit -r orchestrator/ -ll"
+  
+  custom_tests:
+    - name: "Type Checking"
+      command: "mypy orchestrator/ --strict"
+      required: true
+    
+    - name: "Code Coverage"
+      command: "pytest --cov=orchestrator --cov-fail-under=80"
+      required: true
+    
+    - name: "Integration Tests"
+      command: "pytest tests/integration/"
+      required: true
+
+# RAG system settings - optimized for quality
+rag:
+  chunk_size: 1000  # Larger chunks for better context
+  chunk_overlap: 200
+  top_k_results: 5  # More results for better quality
+  rerank_results: true  # Enable reranking for better relevance
+  embedding_model: "nomic-embed-text"
+  index_patterns:
+    - "**/*.py"
+    - "**/*.md"
+    - "**/*.txt"
+    - "**/*.yaml"
+    - "**/*.json"
+  exclude_patterns:
+    - "**/venv/**"
+    - "**/__pycache__/**"
+    - "**/.*"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/node_modules/**"
+    - "**/*.db"
+    - "**/*.log"
+
+# Git settings - automated for production
+git:
+  auto_pull: true  # Auto-pull to stay up to date
+  auto_commit: false  # Require manual review of commits
+  commit_message_template: "feat: {phase_name}\n\n{phase_description}"
+  require_clean_workspace: true  # Ensure clean workspace
+  create_branch_per_phase: true  # Isolate changes
+
+# Artifact management - efficient storage
+artifacts:
+  retention_days: 30  # Keep for 30 days
+  compress_after_days: 7  # Compress after a week
+  max_size_mb: 5000  # 5GB limit
+  storage_path: "data/artifacts"
+  enable_s3_upload: false  # Enable if using cloud storage
+  # s3_bucket: "orchestrator-artifacts"
+  # s3_prefix: "production/"
+
+# Logging - balanced verbosity
+logging:
+  level: "INFO"  # Production log level
+  file_path: "data/logs/orchestrator.log"
+  max_file_size_mb: 500
+  backup_count: 10
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
+  enable_console: true
+  console_level: "WARNING"  # Only warnings and errors to console
+  enable_structured_logging: true  # JSON logs for parsing
+  log_to_syslog: false  # Enable if using syslog
+  # syslog_address: "/dev/log"
+
+# Model overrides - use production models
+model_overrides:
+  planner_model: "deepseek-r1:8b"  # Better reasoning for planning
+  executor_model: "qwen2.5-coder:7b"  # Good balance for execution
+  verifier_model: "qwen2.5-coder:7b"
+  rag_model: "nomic-embed-text"
+
+# Database settings
+database:
+  path: "data/orchestrator.db"
+  backup_enabled: true
+  backup_interval_hours: 6  # Frequent backups
+  backup_retention_days: 30
+  vacuum_on_startup: true  # Optimize database
+  connection_pool_size: 5
+  enable_wal: true  # Write-Ahead Logging for concurrency
+
+# Performance settings
+performance:
+  enable_profiling: false  # Disable profiling overhead
+  max_concurrent_llm_calls: 3  # Moderate concurrency
+  llm_timeout_seconds: 180
+  cache_llm_responses: true  # Cache for efficiency
+  cache_ttl_seconds: 3600  # 1 hour cache
+  enable_metrics: true  # Collect metrics
+  metrics_port: 9090
+
+# Monitoring settings
+monitoring:
+  enable_health_checks: true
+  health_check_interval_seconds: 60
+  enable_alerting: true
+  alert_on_major_findings: true
+  alert_on_execution_failure: true
+  # webhook_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+  # email_recipients:
+  #   - "devops@example.com"
+
+# Security settings
+security:
+  enable_authentication: false  # Enable for multi-user
+  enable_encryption: true  # Encrypt sensitive data
+  secret_key_path: "config/secret.key"  # Keep secret!
+  allowed_hosts:
+    - "localhost"
+    - "127.0.0.1"
+  max_request_size_mb: 10
+
+# Rate limiting
+rate_limiting:
+  enable: true
+  max_runs_per_hour: 10
+  max_concurrent_runs: 2
+  max_llm_calls_per_minute: 30
+
+# Deployment settings
+deployment:
+  environment: "production"
+  service_name: "agent-orchestrator"
+  version: "1.0.0"
+  region: "us-east-1"
+  enable_auto_update: false  # Require manual updates
+  
+# Resilience settings
+resilience:
+  enable_circuit_breaker: true
+  circuit_breaker_threshold: 5  # Open after 5 failures
+  circuit_breaker_timeout_seconds: 60
+  enable_retry_with_backoff: true
+  max_backoff_seconds: 300
+
+# Compliance settings
+compliance:
+  enable_audit_logging: true
+  audit_log_path: "data/logs/audit.log"
+  retain_audit_logs_days: 365
+  enable_gdpr_mode: false  # Enable if processing EU user data
+  enable_hipaa_mode: false  # Enable if processing health data
+
+# Feature flags - stable features only
+features:
+  enable_multi_agent: false  # Not yet production-ready
+  enable_learning: false  # Experimental
+  enable_analytics: true
+  enable_web_ui: false  # Coming soon
+  enable_api: true  # REST API
+  api_port: 8765
+
+# Notification settings
+notifications:
+  enable: true
+  on_run_complete: true
+  on_run_failure: true
+  on_critical_error: true
+  channels:
+    - type: "email"
+      enabled: false
+      # smtp_host: "smtp.example.com"
+      # smtp_port: 587
+      # from_address: "orchestrator@example.com"
+    - type: "slack"
+      enabled: false
+      # webhook_url: "https://hooks.slack.com/..."
+    - type: "pagerduty"
+      enabled: false
+      # integration_key: "YOUR_KEY"
+
+# Maintenance settings
+maintenance:
+  enable_auto_cleanup: true
+  cleanup_schedule: "0 2 * * *"  # 2 AM daily (cron format)
+  cleanup_old_runs: true
+  cleanup_old_artifacts: true
+  vacuum_database_weekly: true
