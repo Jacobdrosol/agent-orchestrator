@@ -49,7 +49,7 @@ Write-Host ""
 # Get the launcher script path
 $ScriptDir = Split-Path -Parent $PSCommandPath
 $ProjectRoot = Split-Path -Parent $ScriptDir
-$LauncherScript = Join-Path $ProjectRoot "AgentOrchestrator\scripts\orchestrator.ps1"
+$LauncherScript = Join-Path $ProjectRoot "scripts\orchestrator.ps1"
 
 # Execute the launcher
 & $LauncherScript "run" -Config $ConfigPath
