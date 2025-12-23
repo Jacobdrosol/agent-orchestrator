@@ -7,9 +7,9 @@ from datetime import datetime
 from typing import List, Dict, Any, Optional
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
-from orchestrator.config_loader import OrchestratorConfig
+from orchestrator.config import OrchestratorConfig
 from orchestrator.llm_client import OllamaClient, OllamaConnectionError, OllamaGenerationError
-from orchestrator.state_manager import StateManager
+from orchestrator.state import StateManager
 from orchestrator.prompt_builder import PromptBuilder
 from orchestrator.phase_validator import PhaseValidator, ValidationError
 from orchestrator.planner_ui import PlannerUI
